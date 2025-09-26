@@ -43,5 +43,19 @@ namespace APP_REQUERIMIENTOS2025.Controllers
             obj.mensaje = "Exito";
             return Ok(obj);
         }
+        [HttpPut]
+        [Route("Actualizar")]
+        public async Task<ActionResult> Put([FromBody] Cliente objeto)
+        {
+            Respuesta obj = new Respuesta();
+            //var cliente = mapper.Map<Clientes>(objeto);
+
+
+            context.Add(objeto);
+            await context.SaveChangesAsync();
+            obj.codigo = 1;
+            obj.mensaje = "Exito";
+            return Ok(obj);
+        }
     }
 }
