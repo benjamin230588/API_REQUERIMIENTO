@@ -5,6 +5,9 @@ using APP_REQUERIMIENTOS2025.EF_CONTEXTO;
 using APP_REQUERIMIENTOS2025.Entidades;
 using APP_REQUERIMIENTOS2025.Helpers;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace API_REQUERIMIENTO.Datos
 {
@@ -17,14 +20,15 @@ namespace API_REQUERIMIENTO.Datos
 
         }
 
-        public async Task<Respuesta> ListaRequerimiento()
+        public async Task<Respuesta> ListaRequerimiento(Paginacion objresult)
         {
 
             Respuesta obj = new Respuesta();
             try
             {
-                var requerimiento = await context.Requerimientos.ToListAsync();
-
+               // var requerimiento = await context.Requerimientos.ToListAsync();
+                List<RequerimientoDTO> model = new List<RequerimientoDTO>();
+                int regis = 0;
                 IQueryable<RequerimientoDTO> result = context.Requerimientos.Select(
                     x => new RequerimientoDTO()
                     {
@@ -37,24 +41,21 @@ namespace API_REQUERIMIENTO.Datos
                         Estado = x.Estado,
                         NommbreEstado = x.Estado == 1 ? "Activo" : "ANULADO"
                     });
-                    
-                //var resul = requerimiento.Select(x => new RequerimientoDTO()
-                //{
-                //    Id = x.Id,
-                //    Titulo = x.Titulo,
-                //    Detalle = x.Detalle,
-                //    FechaProgramada = x.FechaProgramada,
-                //    NombreCliente = x.NombreCliente,
-                //    CodigoCliente = x.CodigoCliente
-                //,
-                //    Estado = x.Estado,
-                //    NommbreEstado = x.Estado == 1 ? "Activo" : "ANULADO"
-                //});
-                if (requerimiento != null)
+
+                model = await result.Skip(objresult.skip).Take(objresult.pagine).ToListAsync();
+                regis = await result.CountAsync();
+
+                ResulLista<RequerimientoDTO> lst = new ResulLista<RequerimientoDTO>()
+                {
+                    cantidadregistro = regis,
+                    lista = model
+                };
+
+                if (regis > 0)
                 {
                     obj.codigo = 1;
                     obj.mensaje = "EXITO";
-                    obj.data = resul;
+                    obj.data = lst;
                 }
                 else
                 {
