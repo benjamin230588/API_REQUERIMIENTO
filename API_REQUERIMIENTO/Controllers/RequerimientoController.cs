@@ -21,14 +21,14 @@ namespace API_REQUERIMIENTO.Controllers
             this.context = context;
 
         }
-        [HttpPost]
+        [HttpGet]
         [Route("Lista")]
 
-        public async Task<ActionResult<List<RequerimientoDTO>>> ListaRequerimiento([FromBody] Paginacion model)
+        public async Task<ActionResult<List<RequerimientoDTO>>> ListaRequerimiento()
         {
             Respuesta obj = new Respuesta();
             DaoRequerimiento objeto = new DaoRequerimiento(context);
-            obj = await objeto.ListaRequerimiento(model);
+            obj = await objeto.ListaRequerimiento();
             //var clientes = await context.Clientes.ToListAsync();
             return Ok(obj);
 

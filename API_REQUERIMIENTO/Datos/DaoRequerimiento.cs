@@ -20,7 +20,7 @@ namespace API_REQUERIMIENTO.Datos
 
         }
 
-        public async Task<Respuesta> ListaRequerimiento(Paginacion objresult)
+        public async Task<Respuesta> ListaRequerimiento()
         {
 
             Respuesta obj = new Respuesta();
@@ -28,7 +28,7 @@ namespace API_REQUERIMIENTO.Datos
             {
                // var requerimiento = await context.Requerimientos.ToListAsync();
                 List<RequerimientoDTO> model = new List<RequerimientoDTO>();
-                int regis = 0;
+                int regis = 1;
                 IQueryable<RequerimientoDTO> result = context.Requerimientos.Select(
                     x => new RequerimientoDTO()
                     {
@@ -42,20 +42,20 @@ namespace API_REQUERIMIENTO.Datos
                         NommbreEstado = x.Estado == 1 ? "Activo" : "ANULADO"
                     });
 
-                model = await result.Skip(objresult.skip).Take(objresult.pagine).ToListAsync();
-                regis = await result.CountAsync();
+                model = await result.ToListAsync();
+                //regis = await result.CountAsync();
 
-                ResulLista<RequerimientoDTO> lst = new ResulLista<RequerimientoDTO>()
-                {
-                    cantidadregistro = regis,
-                    lista = model
-                };
+                //ResulLista<RequerimientoDTO> lst = new ResulLista<RequerimientoDTO>()
+                //{
+                //    cantidadregistro = regis,
+                //    lista = model
+                //};
 
                 if (regis > 0)
                 {
                     obj.codigo = 1;
                     obj.mensaje = "EXITO";
-                    obj.data = lst;
+                    obj.data = model;
                 }
                 else
                 {
